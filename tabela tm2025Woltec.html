@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ranking - Tênis de Mesa Woltec</title>
+    <style>
+        body {
+            font-family: "Arial", sans-serif;
+            background-color: #f8f9fa;
+            color: #212529;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        header {
+            background-color: #007bff;
+            color: white;
+            padding: 20px;
+        }
+        header img {
+            max-width: 150px;
+            margin-bottom: 10px;
+        }
+        header h1 {
+            font-size: 24px;
+            margin: 0;
+            font-weight: bold;
+        }
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="logomarca_1-1.png" alt="Logo da Woltec">
+        <h1>Ranking - Tênis de Mesa Woltec</h1>
+    </header>
+
+    <table id="ranking">
+        <thead>
+            <tr>
+                <th>Ranking</th>
+                <th>Nome</th>
+                <th>Total</th>
+                <th>Porcentagem</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <script>
+        // Dados de participantes
+        const participantes = JSON.parse(localStorage.getItem("participantes")) || [];
+
+        function preencherRanking() {
+            const tabelaRanking = document.getElementById("ranking").querySelector("tbody");
+            tabelaRanking.innerHTML = "";
+
+            participantes.forEach(p => {
+                p.total = p.scores.reduce((sum, score) => sum + score, 0);
+            });
+
+            const totalGeral = participantes.reduce((sum, p) => sum + p.total, 0);
+            participantes.forEach(p => {
+                p.porcentagem = totalGeral > 0 ? ((p.total / totalGeral) * 100).toFixed(2) : 0;
+            });
+
+            participantes.sort((a, b) => b.total - a.total);
+            participantes.forEach((participante, index) => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${participante.nome}</td>
+                    <td>${participante.total}</td>
+                    <td>${participante.porcentagem}%</td>
+                `;
+                tabelaRanking.appendChild(row);
+            });
+        }
+
+        preencherRanking();
+    </script>
+</body>
+</html>
